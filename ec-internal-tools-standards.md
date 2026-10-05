@@ -57,14 +57,26 @@ SVG files are vector and scale to any size without quality loss. Use SVG whereve
 | Name | Hex | RGB | Usage |
 |------|-----|-----|-------|
 | EC Orange | `#FF6F42` | `255, 111, 66` | Primary brand colour — CTAs, highlights, accents |
-| EC Orange (tint) | `#FFF0EB` | `255, 240, 235` | Light orange background — callout boxes, highlights |
-| EC Navy / Black | `#1a1a1a` | `26, 26, 26` | Dark backgrounds, headers, primary dark text |
+| EC Orange (hover) | `#E3633B` | `227, 99, 59` | Hover and pressed states on orange elements |
+| EC Orange (tint) | `#FFF2EE` | `255, 242, 238` | Light orange background — callout boxes, highlights |
+| EC Navy / Black | `#1a1a1a` | `26, 26, 26` | Dark backgrounds, headers, primary dark text, text on orange |
 | Body text | `#1a1f2e` | `26, 31, 46` | Main text on light backgrounds |
 | Secondary text | `#6b7280` | `107, 114, 128` | Labels, captions, supporting text |
 | Light background | `#f7f8fa` | `247, 248, 250` | Page/section backgrounds |
 | Border | `#eaecf0` | `234, 236, 240` | Dividers, table borders, input borders |
 
 **Using these in design tools:** Most tools accept hex values directly. In Word/PowerPoint, go to custom colour and enter the hex code (without the `#`). In Adobe tools, you can use either hex or RGB. In Google Docs/Slides, use the hex code in the custom colour picker.
+
+<a name="text-on-orange"></a>
+#### Text on orange
+
+**Always use dark text (`#1a1a1a`) on EC Orange. Never use white text on orange.**
+
+White on `#FF6F42` has a contrast ratio of 2.76:1, which fails accessibility guidelines (WCAG AA) even for large or bold text. `#1a1a1a` on `#FF6F42` is 6.3:1 (5.1:1 on the `#E3633B` hover), which passes for all text sizes.
+
+This applies anywhere orange is used as a fill: buttons, badges, pills, table header rows, slide title bars, cover-page bands, and labels on orange chart bars.
+
+For the same reason, don't use EC Orange for body text or small text on white or light backgrounds. Use orange for fills, accents, borders, icons, and large display elements; use `#1a1f2e` for text.
 
 ---
 
@@ -183,8 +195,8 @@ async function sendOtpEmail(toEmail, code, toolName = "EC Internal Tool") {
     html:    `<div style="font-family:sans-serif;max-width:400px;margin:40px auto">
       <p style="color:#6b7280;font-size:14px">${toolName}</p>
       <h2 style="margin:8px 0 24px">Your login code</h2>
-      <div style="background:#fff0eb;border-radius:8px;padding:24px;text-align:center;margin-bottom:24px">
-        <span style="font-size:36px;font-weight:700;letter-spacing:10px;font-family:monospace;color:#FF6F42">${code}</span>
+      <div style="background:#fff2ee;border-left:4px solid #FF6F42;border-radius:8px;padding:24px;text-align:center;margin-bottom:24px">
+        <span style="font-size:36px;font-weight:700;letter-spacing:10px;font-family:monospace;color:#1a1a1a">${code}</span>
       </div>
       <p style="color:#6b7280;font-size:13px">This code expires in 10 minutes. If you didn't request this, you can safely ignore this email.</p>
     </div>`,
@@ -409,16 +421,18 @@ header h1 { font-size: 16px; font-weight: 600; }
 
 ```css
 :root {
-  --navy:     #1a1a1a;
-  --orange:   #FF6F42;
-  --orange-l: #fff0eb;
-  --gray-1:   #f7f8fa;
-  --gray-2:   #eaecf0;
-  --gray-3:   #c8cdd6;
-  --gray-4:   #6b7280;
-  --text:     #1a1f2e;
-  --radius:   8px;
-  --shadow:   0 2px 12px rgba(0,0,0,0.08);
+  --navy:      #1a1a1a;
+  --orange:    #FF6F42;
+  --orange-h:  #E3633B;  /* hover / pressed */
+  --orange-l:  #FFF2EE;  /* tint */
+  --on-orange: #1a1a1a;  /* text on orange fills — never white */
+  --gray-1:    #f7f8fa;
+  --gray-2:    #eaecf0;
+  --gray-3:    #c8cdd6;
+  --gray-4:    #6b7280;
+  --text:      #1a1f2e;
+  --radius:    8px;
+  --shadow:    0 2px 12px rgba(0,0,0,0.08);
 }
 ```
 
@@ -431,11 +445,13 @@ header h1 { font-size: 16px; font-weight: 600; }
 
 #### Buttons
 
+Primary buttons use dark text on orange — see [Text on orange](#text-on-orange).
+
 ```css
 .btn {
   padding: 11px 16px;
   background: var(--orange);
-  color: #fff;
+  color: var(--on-orange);
   border: none;
   border-radius: var(--radius);
   font-size: 15px;
@@ -443,7 +459,7 @@ header h1 { font-size: 16px; font-weight: 600; }
   cursor: pointer;
   transition: background 0.15s;
 }
-.btn:hover:not(:disabled) { background: #e55a2b; }
+.btn:hover:not(:disabled) { background: var(--orange-h); }
 .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 ```
 
@@ -483,5 +499,6 @@ input:focus { border-color: var(--orange); }
 - [ ] Create `config.json` with at least `{ "allowedUsers": [] }`
 - [ ] Copy needed logo files from `/assets/logos/` into the project and reference in header/favicon
 - [ ] Apply CSS custom properties to stylesheets
+- [ ] Check no white text sits on orange fills — use `var(--on-orange)`
 - [ ] Add admin user management UI if users need to be managed without server access
 - [ ] Add repo to the `escape-collective` GitHub org
